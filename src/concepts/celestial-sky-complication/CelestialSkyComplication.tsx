@@ -49,7 +49,7 @@ const CelestialSkyComplication: React.FC = () => {
           : 'bg-gradient-to-br from-white via-blue-50 to-indigo-100'
       }`}
     >
-      <FixedHeaderCelestial isNightMode={isNightMode} onToggleTheme={() => {}} />
+      <FixedHeaderCelestial />
       
       {/* Scrollable Container */}
       <div 
@@ -64,7 +64,7 @@ const CelestialSkyComplication: React.FC = () => {
             transition: 'opacity 0.3s ease-out'
           }}
         >
-          <CoverPage isNightMode={isNightMode} />
+          <CoverPage />
         </div>
         
         {/* Background Page Component */}

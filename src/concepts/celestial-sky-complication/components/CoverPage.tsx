@@ -1,11 +1,7 @@
 import React from 'react'
 import { Row, Col, Button } from 'antd'
 
-interface CoverPageProps {
-  isNightMode: boolean
-}
-
-const CoverPage: React.FC<CoverPageProps> = ({ isNightMode }) => {
+const CoverPage: React.FC = () => {
   const scrollToComplication = () => {
     const element = document.querySelector('.background-page')
     if (element) {

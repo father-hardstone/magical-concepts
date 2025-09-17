@@ -1,13 +1,6 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
 
-interface FixedHeaderCelestialProps {
-  isNightMode: boolean
-  onToggleTheme: () => void
-}
-
-const FixedHeaderCelestial: React.FC<FixedHeaderCelestialProps> = ({ isNightMode, onToggleTheme }) => {
-  const navigate = useNavigate()
+const FixedHeaderCelestial: React.FC = () => {
 
   return (
     <nav className="fixed top-0 w-full z-[100] bg-black/30 backdrop-blur-md border-b border-white/20">

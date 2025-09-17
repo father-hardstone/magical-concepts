@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import ExploreMenu from '../components/ExploreMenu'
@@ -19,7 +19,6 @@ function HomePage() {
 
   const title = "Ibrahim's Gallery of Magical Concepts"
   const words = title.split(' ')
-  const letters = title.split('')
 
   const getLetterStyle = (index: number) => {
     const isHovered = hoveredLetter === index
