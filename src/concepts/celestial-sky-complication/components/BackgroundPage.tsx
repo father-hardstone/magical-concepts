@@ -10,10 +10,12 @@ interface BackgroundPageProps {
 const BackgroundPage: React.FC<BackgroundPageProps> = ({ isNightMode }) => {
   const skyDiskRef = useRef<HTMLDivElement>(null)
   const starsRef = useRef<HTMLDivElement>(null)
+  const cloudsRef = useRef<HTMLDivElement>(null)
   const [currentTime, setCurrentTime] = useState<Date>(new Date())
   const [isSimulating, setIsSimulating] = useState(false)
   const [simulationSpeed, setSimulationSpeed] = useState(1)
   const [controls, setControls] = useState<any>(null)
+  const [starsRotation, setStarsRotation] = useState(0)
 
   // Handle time updates from CelestialBodies
   const handleTimeUpdate = (time: Date, simulating: boolean, speed: number) => {
@@ -27,16 +29,53 @@ const BackgroundPage: React.FC<BackgroundPageProps> = ({ isNightMode }) => {
     setControls(newControls)
   }
 
-  // Calculate stars opacity based on time and moon position
-  const getStarsOpacity = () => {
+  // Calculate clouds opacity based on time of day
+  const getCloudsOpacity = () => {
     const now = currentTime
     const lat = 31.5497
     const lng = 74.3436
-    
+
     // Get sun position to determine day/night transition
     const sunPos = SunCalc.getPosition(now, lat, lng)
     const sunAltitude = sunPos.altitude * 180 / Math.PI
-    
+
+    // Clouds are visible during day time and fade during twilight
+    // Start fading when sun is at -6° (civil twilight)
+    // Completely hidden when sun is at -12° (astronomical twilight)
+    if (sunAltitude > -6) {
+      // Day time - full clouds visibility
+      return 1.0
+    } else if (sunAltitude < -12) {
+      // Night time - no clouds
+      return 0
+    } else {
+      // Twilight transition: fade between 1 and 0 based on sun altitude
+      // Map sun altitude from -6° to -12° to opacity from 1 to 0
+      const fadeFactor = (sunAltitude + 6) / -6 // 0 to 1
+      return fadeFactor
+    }
+  }
+
+  // Calculate stars opacity based on time and moon position
+  const getStarsOpacity = (starsRotation = 0) => {
+    const now = currentTime
+    const lat = 31.5497
+    const lng = 74.3436
+
+    // Get sun position to determine day/night transition
+    const sunPos = SunCalc.getPosition(now, lat, lng)
+    const sunAltitude = sunPos.altitude * 180 / Math.PI
+
+    // Calculate rotation-based fade oscillation
+    // At 0° rotation: max fade (min opacity)
+    // At 180° rotation: min fade (max opacity)
+    // Oscillates smoothly between these values
+    const normalizedRotation = ((starsRotation % 360) + 360) % 360 // Normalize to 0-360
+    const rotationFade = (Math.cos(normalizedRotation * Math.PI / 180) + 1) / 2 // 0 to 1
+    const minOpacity = 0.3 // Minimum opacity at 0° rotation (30%)
+    const maxOpacity = 1.0 // Maximum opacity at 180° rotation (100%)
+    const rotationOpacity = minOpacity + (maxOpacity - minOpacity) * rotationFade
+
     // Gradual fade based on sun altitude
     // Start fading when sun is at -6° (civil twilight)
     // Completely hidden when sun is at +6° (day time)
@@ -47,71 +86,119 @@ const BackgroundPage: React.FC<BackgroundPageProps> = ({ isNightMode }) => {
       const moonPos = SunCalc.getMoonPosition(now, lat, lng)
       const moonAzimuth = (moonPos.azimuth * 180 / Math.PI + 180) % 360
       const moonAltitude = moonPos.altitude * 180 / Math.PI
-      
+
       // If moon is above horizon and on the night side, reduce stars opacity
       if (moonAltitude > -6 && moonAzimuth >= 90 && moonAzimuth <= 270) {
-        return 0.3 // 30% opacity when moon is visible on night side
+        return rotationOpacity * 0.3 // Apply moon dimming to rotation-based opacity
       }
-      
-      return 1 // Full stars opacity during night time
+
+      return rotationOpacity // Use rotation-based opacity for night time
     } else {
       // Twilight transition: fade between 0 and 1 based on sun altitude
       // Map sun altitude from -6° to +6° to opacity from 1 to 0
       const fadeFactor = (sunAltitude + 6) / 12 // 0 to 1
       const baseOpacity = 1 - fadeFactor // 1 to 0
-      
+
       // Check moon position for additional dimming during twilight
       const moonPos = SunCalc.getMoonPosition(now, lat, lng)
       const moonAzimuth = (moonPos.azimuth * 180 / Math.PI + 180) % 360
       const moonAltitude = moonPos.altitude * 180 / Math.PI
-      
+
       if (moonAltitude > -6 && moonAzimuth >= 90 && moonAzimuth <= 270) {
-        return baseOpacity * 0.3 // Apply moon dimming to twilight opacity
+        return baseOpacity * rotationOpacity * 0.3 // Apply both twilight and moon dimming to rotation-based opacity
       }
-      
-      return baseOpacity
+
+      return baseOpacity * rotationOpacity // Apply rotation-based opacity to twilight
     }
   }
 
   // Set initial stars opacity
   useEffect(() => {
     if (starsRef.current) {
-      const targetOpacity = getStarsOpacity()
+      const targetOpacity = getStarsOpacity(starsRotation)
       gsap.set(starsRef.current, { opacity: targetOpacity })
+    }
+  }, [starsRotation])
+
+  // Set initial clouds opacity
+  useEffect(() => {
+    if (cloudsRef.current) {
+      const targetOpacity = getCloudsOpacity()
+      console.log('Initial clouds opacity:', targetOpacity, 'Current time:', currentTime.toLocaleTimeString())
+      // Temporarily set high opacity for testing
+      gsap.set(cloudsRef.current, { opacity: Math.max(targetOpacity, 0.8) })
     }
   }, [])
 
-  // Animate stars opacity changes smoothly
+  // Animate stars opacity changes smoothly - only on major changes (time/simulation)
   useEffect(() => {
     if (starsRef.current) {
-      const targetOpacity = getStarsOpacity()
-      console.log('Stars opacity target:', targetOpacity, 'Sun altitude:', (SunCalc.getPosition(currentTime, 31.5497, 74.3436).altitude * 180 / Math.PI).toFixed(2))
+      const targetOpacity = getStarsOpacity(starsRotation)
+      console.log('Stars opacity target:', targetOpacity, 'Stars rotation:', starsRotation.toFixed(2), 'Sun altitude:', (SunCalc.getPosition(currentTime, 31.5497, 74.3436).altitude * 180 / Math.PI).toFixed(2))
       gsap.to(starsRef.current, {
         opacity: targetOpacity,
-        duration: 2, // 2 second fade transition
-        ease: "power2.inOut"
+        duration: 8, // 8 second very slow transition
+        ease: "power1.out" // Very gentle easing
       })
     }
-  }, [currentTime, isSimulating, simulationSpeed])
+  }, [currentTime, isSimulating, simulationSpeed]) // Only major changes
 
-  // Force opacity update every 500ms for smoother transitions
+  // Animate clouds opacity changes smoothly
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (starsRef.current) {
-        const targetOpacity = getStarsOpacity()
-        gsap.to(starsRef.current, {
-          opacity: targetOpacity,
-          duration: 1, // 1 second smooth transition
-          ease: "power2.inOut"
-        })
+    if (cloudsRef.current) {
+      const targetOpacity = getCloudsOpacity()
+      console.log('Clouds opacity target:', targetOpacity, 'Sun altitude:', (SunCalc.getPosition(currentTime, 31.5497, 74.3436).altitude * 180 / Math.PI).toFixed(2))
+      gsap.to(cloudsRef.current, {
+        opacity: targetOpacity,
+        duration: 10, // 10 second slow transition for clouds
+        ease: "power1.out" // Very gentle easing
+      })
+    }
+  }, [currentTime, isSimulating, simulationSpeed]) // Only major changes
+
+  // Continuous smooth rotation-based opacity animation
+  useEffect(() => {
+    if (starsRef.current && isSimulating) {
+      // Create a continuous animation that updates opacity based on rotation
+      const updateOpacity = () => {
+        if (starsRef.current) {
+          const currentRotation = gsap.getProperty(starsRef.current, "rotation") as number
+          const targetOpacity = getStarsOpacity(currentRotation)
+          gsap.to(starsRef.current, {
+            opacity: targetOpacity,
+            duration: 0.5, // Very quick updates for smooth rotation
+            ease: "none" // No easing for immediate response
+          })
+        }
       }
-    }, 500) // Update every 500ms
 
-    return () => clearInterval(interval)
-  }, [currentTime, isSimulating, simulationSpeed])
+      // Update every 100ms during simulation for smooth rotation
+      const interval = setInterval(updateOpacity, 100)
+      return () => {
+        clearInterval(interval)
+        // Kill any ongoing GSAP animations
+        if (starsRef.current) {
+          gsap.killTweensOf(starsRef.current)
+        }
+      }
+    }
+  }, [isSimulating, currentTime]) // Only when simulating
+
+  // Cleanup all animations and intervals on unmount
+  useEffect(() => {
+    return () => {
+      console.log('BackgroundPage unmounting - cleaning up')
+      // Kill all GSAP animations
+      if (skyDiskRef.current) gsap.killTweensOf(skyDiskRef.current)
+      if (starsRef.current) gsap.killTweensOf(starsRef.current)
+      if (cloudsRef.current) gsap.killTweensOf(cloudsRef.current)
+      // Kill all animations globally
+      gsap.killTweensOf("*")
+    }
+  }, [])
 
   useEffect(() => {
-    if (skyDiskRef.current && starsRef.current) {
+    if (skyDiskRef.current && starsRef.current && cloudsRef.current) {
       // Calculate rotation based on current time
       // At noon (12:00), rotation should be 0 degrees
       // At midnight (00:00), rotation should be 180 degrees
@@ -126,21 +213,25 @@ const BackgroundPage: React.FC<BackgroundPageProps> = ({ isNightMode }) => {
       // Normalize to 0-360 range
       rotation = ((rotation % 360) + 360) % 360
       
-      // Set initial rotation for both sky disk and stars
+      // Set initial rotation for sky disk, stars, and clouds
       gsap.set(skyDiskRef.current, { rotation: rotation })
-      gsap.set(starsRef.current, { rotation: rotation * 0.5 }) // Stars at half rotation
+      const initialStarsRotation = rotation * 0.5
+      gsap.set(starsRef.current, { rotation: initialStarsRotation }) // Stars at half rotation
+      gsap.set(cloudsRef.current, { rotation: rotation }) // Clouds rotate with sky disk
+      setStarsRotation(initialStarsRotation) // Track stars rotation
       
       if (isSimulating) {
         // Stop any existing animation first
         gsap.killTweensOf(skyDiskRef.current)
         gsap.killTweensOf(starsRef.current)
+        gsap.killTweensOf(cloudsRef.current)
         
         // Animate rotation based on simulation speed
         const speedMultiplier = getSpeedMultiplier(simulationSpeed)
         // Duration for one complete 24-hour cycle in real seconds
         const duration = 24 * 60 * 60 / speedMultiplier // Convert hours to seconds, then divide by speed
         
-        gsap.to(skyDiskRef.current, {
+      gsap.to(skyDiskRef.current, {
           rotation: `+=360`,
           duration: duration,
           ease: "none",
@@ -152,14 +243,31 @@ const BackgroundPage: React.FC<BackgroundPageProps> = ({ isNightMode }) => {
           rotation: `+=360`, // Full rotation but at half speed
           duration: duration * 2, // Double duration for half speed
           ease: "none",
-          repeat: -1
+          repeat: -1,
+          onUpdate: function() {
+            // Track the current rotation for opacity calculations
+            const currentRotation = gsap.getProperty(starsRef.current, "rotation") as number
+            setStarsRotation(currentRotation)
+          }
         })
+
+        // Clouds rotate with sky disk at same speed
+        gsap.to(cloudsRef.current, {
+          rotation: `+=360`,
+          duration: duration,
+        ease: "none",
+        repeat: -1
+      })
       } else {
         // Stop animation and set to current time position
         gsap.killTweensOf(skyDiskRef.current)
         gsap.killTweensOf(starsRef.current)
+        gsap.killTweensOf(cloudsRef.current)
         gsap.set(skyDiskRef.current, { rotation: rotation })
-        gsap.set(starsRef.current, { rotation: rotation * 0.5 }) // Stars at half rotation
+        const pausedStarsRotation = rotation * 0.5
+        gsap.set(starsRef.current, { rotation: pausedStarsRotation }) // Stars at half rotation
+        gsap.set(cloudsRef.current, { rotation: rotation }) // Clouds at same rotation as sky disk
+        setStarsRotation(pausedStarsRotation) // Track stars rotation
       }
     }
   }, [currentTime, isSimulating, simulationSpeed])
@@ -221,6 +329,26 @@ const BackgroundPage: React.FC<BackgroundPageProps> = ({ isNightMode }) => {
         }}
       />
 
+      {/* Clouds Overlay - Day Sky */}
+      <div 
+        ref={cloudsRef}
+        className="absolute"
+        style={{
+          backgroundImage: 'url(/src/assets/images/sky-complication/day-night/clouds.png)',
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          width: '100%',
+          height: '100%',
+          left: '50%',
+          top: 'calc(50% + 250px)',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 7, // Above stars but below sky phase cover
+          opacity: 0, // Initial opacity, will be animated by GSAP
+          transformOrigin: 'center bottom' // Pivot at bottom center edge
+        }}
+      />
+      
       {/* Sky Phase Cover as Foreground Image */}
       <img 
         src="/src/assets/images/sky-complication/day-night/sky-phase-cover.png"

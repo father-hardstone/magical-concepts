@@ -17,7 +17,7 @@ interface CelestialBodiesProps {
   }) => void
 }
 
-const CelestialBodies: React.FC<CelestialBodiesProps> = ({ isNightMode, onTimeUpdate, onControlsUpdate }) => {
+const CelestialBodies: React.FC<CelestialBodiesProps> = ({ onTimeUpdate, onControlsUpdate }) => {
   const [sunPosition, setSunPosition] = useState({ azimuth: 0, altitude: 0 })
   const [moonPosition, setMoonPosition] = useState({ azimuth: 0, altitude: 0 })
   const [simulationTime, setSimulationTime] = useState<Date | null>(null)
@@ -28,6 +28,15 @@ const CelestialBodies: React.FC<CelestialBodiesProps> = ({ isNightMode, onTimeUp
 
   const sunRef = useRef<HTMLImageElement>(null)
   const moonRef = useRef<HTMLImageElement>(null)
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // Kill all GSAP animations
+      if (sunRef.current) gsap.killTweensOf(sunRef.current)
+      if (moonRef.current) gsap.killTweensOf(moonRef.current)
+    }
+  }, [])
 
   // --- smoothing helper ---
   const smoothValue = (prev: number, next: number, factor = 0.05) => {
@@ -109,8 +118,8 @@ const CelestialBodies: React.FC<CelestialBodiesProps> = ({ isNightMode, onTimeUp
         onTimeUpdate(now, isSimulating, simulationSpeed)
       }
 
-      const sunStyle = getCelestialBodyStyle(sunPosition.azimuth, sunPosition.altitude, 300, 'sun')
-      const moonStyle = getCelestialBodyStyle(moonPosition.azimuth, moonPosition.altitude, 60, 'moon')
+      const sunStyle = getCelestialBodyStyle(sunPosition.azimuth, sunPosition.altitude, 100, 100, 'sun')
+      const moonStyle = getCelestialBodyStyle(moonPosition.azimuth, moonPosition.altitude, 60, 60, 'moon')
 
       // Use direct style updates for smoother animation, only animate when simulating
       if (sunRef.current) {
@@ -161,7 +170,8 @@ const CelestialBodies: React.FC<CelestialBodiesProps> = ({ isNightMode, onTimeUp
   const getCelestialBodyStyle = (
     azimuth: number,
     altitude: number,
-    size: number = 40,
+    width: number = 40,
+    height: number = 40,
     bodyType: 'sun' | 'moon' = 'sun'
   ) => {
     const W = 60
@@ -179,8 +189,8 @@ const CelestialBodies: React.FC<CelestialBodiesProps> = ({ isNightMode, onTimeUp
         position: 'absolute' as const,
         left: `-9999px`,
         top: `-9999px`,
-        width: `${size}px`,
-        height: `${size}px`,
+        width: `${width}px`,
+        height: `${height}px`,
         opacity: 0
       }
     }
@@ -228,8 +238,8 @@ const CelestialBodies: React.FC<CelestialBodiesProps> = ({ isNightMode, onTimeUp
       position: 'absolute' as const,
       left: `${boundaryOffsetX + x}%`,
       top: `${boundaryOffsetY + y}%`,
-      width: `${size}px`,
-      height: `${size}px`,
+      width: `${width}px`,
+      height: `${height}px`,
       transform: `translate(-50%, -50%)`,
       zIndex: bodyType === 'sun' ? 5 : 4, // sun always on top, but under sky phase cover
       opacity: opacity
@@ -275,10 +285,6 @@ const CelestialBodies: React.FC<CelestialBodiesProps> = ({ isNightMode, onTimeUp
     // Reset the flag after a brief delay to allow the update
     setTimeout(() => setIsResetting(false), 100)
   }
-  const resetToCurrentTime = () => {
-    setIsSimulating(false)
-    setSimulationTime(null)
-  }
   const speedUp = () => setSimulationSpeed(prev => Math.min(prev + 1, 10))
   const slowDown = () => setSimulationSpeed(prev => Math.max(prev - 1, 1))
 
@@ -309,7 +315,7 @@ const CelestialBodies: React.FC<CelestialBodiesProps> = ({ isNightMode, onTimeUp
           ref={sunRef}
           src="/src/assets/images/sky-complication/day-night/sun.png"
           alt="Sun"
-          style={getCelestialBodyStyle(sunPosition.azimuth, sunPosition.altitude, 400, 'sun')}
+          style={getCelestialBodyStyle(sunPosition.azimuth, sunPosition.altitude, 600, 400, 'sun')}
         />
 
         {/* Moon */}
@@ -317,7 +323,7 @@ const CelestialBodies: React.FC<CelestialBodiesProps> = ({ isNightMode, onTimeUp
           ref={moonRef}
           src="/src/assets/images/sky-complication/day-night/moon.png"
           alt="Moon"
-          style={getCelestialBodyStyle(moonPosition.azimuth, moonPosition.altitude, 90, 'moon')}
+          style={getCelestialBodyStyle(moonPosition.azimuth, moonPosition.altitude, 90, 90, 'moon')}
         />
       </div>
 

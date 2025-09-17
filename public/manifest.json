@@ -1,0 +1,17 @@
+{
+  "name": "Magical Concepts",
+  "short_name": "Magical Concepts",
+  "description": "A collection of innovative design concepts and interactive experiences",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e3a8a",
+  "theme_color": "#581c87",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

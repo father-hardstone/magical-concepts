@@ -45,16 +45,13 @@ const CoverPage: React.FC<CoverPageProps> = ({ isNightMode }) => {
             {/* Subheading */}
             <div className="mb-8 space-y-4">
               <h2 className="text-xl md:text-2xl font-semibold text-gray-200">
-                Grand Complications by Patek Philippe
+                Astronomy Meets Horology
               </h2>
               <p className="text-lg text-gray-300 leading-relaxed">
-                Experience the pinnacle of horological artistry with our celestial sky complication. 
-                This masterpiece combines astronomical precision with mechanical excellence, 
-                displaying the sun, moon, and stars in perfect harmony with the passage of time.
+                The celestial sky complication brings the heavens to the wrist—a rotating chart of stars, sun, and moon. In 1989, Patek Philippe's Calibre 89 introduced astronomical displays in a modern grand complication. This vision was perfected in 2002 with the Ref. 5102 "Celestial", showing the night sky, moon phases, and orbits with unmatched precision.
               </p>
-              <p className="text-base text-gray-400">
-                Crafted by the master watchmakers at Patek Philippe, this grand complication 
-                represents over a century of innovation in astronomical timepieces.
+              <p className="text-base text-gray-400 leading-relaxed">
+                Patek Philippe remains the pioneer of this rare invention, uniting astronomy and horology in a timeless masterpiece.
               </p>
             </div>
 

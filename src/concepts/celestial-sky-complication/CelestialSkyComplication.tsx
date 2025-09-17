@@ -1,12 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
+import { gsap } from 'gsap'
 import FixedHeaderCelestial from './components/FixedHeaderCelestial'
 import CoverPage from './components/CoverPage'
 import BackgroundPage from './components/BackgroundPage'
 
 const CelestialSkyComplication: React.FC = () => {
+  const location = useLocation()
   const [isNightMode] = useState(true) // Always dark mode for this page
   const [scrollY, setScrollY] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  // Debug: Log when component mounts/unmounts
+  useEffect(() => {
+    console.log('CelestialSkyComplication mounted', location.pathname)
+    return () => {
+      console.log('CelestialSkyComplication unmounted')
+      // Force cleanup of all GSAP animations
+      gsap.killTweensOf("*")
+    }
+  }, [location.pathname])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,11 +41,14 @@ const CelestialSkyComplication: React.FC = () => {
   const backgroundPageOpacity = Math.min(1, scrollY / 400) // BackgroundPage fades in during first 400px
 
   return (
-    <div className={`w-screen h-screen relative overflow-hidden transition-all duration-1000 ${
-      isNightMode 
-        ? 'bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900' 
-        : 'bg-gradient-to-br from-white via-blue-50 to-indigo-100'
-    }`}>
+    <div 
+      key="celestial-sky-complication-main"
+      className={`w-screen h-screen relative overflow-hidden transition-all duration-1000 ${
+        isNightMode 
+          ? 'bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900' 
+          : 'bg-gradient-to-br from-white via-blue-50 to-indigo-100'
+      }`}
+    >
       <FixedHeaderCelestial isNightMode={isNightMode} onToggleTheme={() => {}} />
       
       {/* Scrollable Container */}
