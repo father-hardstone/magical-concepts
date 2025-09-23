@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import FixedHeader from './components/FixedHeader'
 import ConceptCardsSection from './components/ConceptCardsSection'
 import FeaturesSection from './components/FeaturesSection'

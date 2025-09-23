@@ -9,8 +9,7 @@ export const useSnapScroll = (options: UseSnapScrollOptions) => {
   const { totalSections, onSectionChange } = options
   const [currentSection, setCurrentSection] = useState(0)
   const [isScrolling, setIsScrolling] = useState(false)
-  const [isContentMode, setIsContentMode] = useState(false) // New state for content rolling mode
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const scrollTimeoutRef = useRef<number | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -95,7 +94,6 @@ export const useSnapScroll = (options: UseSnapScrollOptions) => {
   return {
     currentSection,
     isScrolling,
-    isContentMode,
     containerRef,
     scrollToSection
   }

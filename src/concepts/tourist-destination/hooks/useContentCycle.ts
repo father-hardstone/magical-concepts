@@ -17,7 +17,7 @@ export const useContentCycle = (options: UseContentCycleOptions) => {
   
   const [currentContentIndex, setCurrentContentIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const intervalRef = useRef<number | null>(null)
   const scrollAccumulator = useRef(0)
 
   // Auto-cycle effect
