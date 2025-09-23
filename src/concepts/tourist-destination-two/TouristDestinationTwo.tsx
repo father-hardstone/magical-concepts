@@ -117,7 +117,7 @@ const TouristDestinationTwo: React.FC = () => {
           ref={celestialDiskRef}
           className="absolute opacity-100"
           style={{
-            backgroundImage: 'url(/src/assets/images/buckingham2/celestial-disk.png)',
+            backgroundImage: 'url(/images/buckingham2/celestial-disk.png)',
             backgroundSize: 'contain',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
@@ -135,7 +135,7 @@ const TouristDestinationTwo: React.FC = () => {
           ref={dayImageRef}
           className="absolute inset-0 border-2 border-red-500"
           style={{
-            backgroundImage: 'url(/src/assets/images/buckingham2/day.png)',
+            backgroundImage: 'url(/images/buckingham2/day.png)',
             backgroundSize: '100%',
             backgroundPosition: 'center bottom',
             backgroundRepeat: 'no-repeat',
@@ -150,7 +150,7 @@ const TouristDestinationTwo: React.FC = () => {
           ref={nightImageRef}
           className="absolute inset-0 border-2 border-blue-500"
           style={{
-            backgroundImage: 'url(/src/assets/images/buckingham2/night.png)',
+            backgroundImage: 'url(/images/buckingham2/night.png)',
             backgroundSize: '100%',
             backgroundPosition: 'center bottom',
             backgroundRepeat: 'no-repeat',

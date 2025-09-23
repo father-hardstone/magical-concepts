@@ -183,7 +183,7 @@ const Clouds: React.FC = () => {
         left-1/2 -translate-x-1/2 -translate-y-1/2
         origin-center z-0"
       style={{
-        backgroundImage: `url('/src/assets/images/sky-complication/day-night/clouds.png')`,
+        backgroundImage: `url('/images/sky-complication/day-night/clouds.png')`,
         backgroundSize: 'clamp(100%, 200%, 130%)', // Keep this as it's complex clamp function
       }}
     />

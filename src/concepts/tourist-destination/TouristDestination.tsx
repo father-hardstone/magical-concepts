@@ -67,7 +67,7 @@ const TouristDestination: React.FC = () => {
             isNightMode ? 'opacity-0' : 'opacity-100'
           }`}
           style={{
-            backgroundImage: 'url(/src/assets/images/buckingham/day.jpg)',
+            backgroundImage: 'url(/images/buckingham/day.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
@@ -80,7 +80,7 @@ const TouristDestination: React.FC = () => {
             isNightMode ? 'opacity-100' : 'opacity-0'
           }`}
           style={{
-            backgroundImage: 'url(/src/assets/images/buckingham/night.jpg)',
+            backgroundImage: 'url(/images/buckingham/night.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'

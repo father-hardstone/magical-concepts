@@ -176,7 +176,7 @@ const Stars: React.FC = () => {
         left-1/2 -translate-x-1/2 -translate-y-1/2
         origin-center z-[0.5]"
       style={{
-        backgroundImage: `url('/src/assets/images/sky-complication/day-night/stars.png')`,
+        backgroundImage: `url('/images/sky-complication/day-night/stars.png')`,
         backgroundSize: 'clamp(100%, 120%, 140%)', // Keep this as it's complex clamp function
       }}
     />

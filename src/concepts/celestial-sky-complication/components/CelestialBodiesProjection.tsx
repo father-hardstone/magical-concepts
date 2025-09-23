@@ -392,7 +392,7 @@ const CelestialBodiesProjection: React.FC = () => {
           -translate-x-1/2 -translate-y-1/2
           z-[2] opacity-0"
         style={{
-          backgroundImage: `url('/src/assets/images/sky-complication/day-night/sun.png')`,
+          backgroundImage: `url('/images/sky-complication/day-night/sun.png')`,
         }}
       />
 
@@ -408,7 +408,7 @@ const CelestialBodiesProjection: React.FC = () => {
           -translate-x-1/2 -translate-y-1/2
           z-[1] opacity-0"
         style={{
-          backgroundImage: `url('/src/assets/images/sky-complication/day-night/moon.png')`,
+          backgroundImage: `url('/images/sky-complication/day-night/moon.png')`,
         }}
       />
     </div>

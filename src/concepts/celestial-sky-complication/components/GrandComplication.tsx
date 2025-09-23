@@ -142,7 +142,7 @@ const GrandComplication: React.FC = () => {
           left-1/2 -translate-x-1/2 -translate-y-1/2
           origin-center z-0"
         style={{
-          backgroundImage: `url('/src/assets/images/sky-complication/day-night/sky-disk.png')`,
+          backgroundImage: `url('/images/sky-complication/day-night/sky-disk.png')`,
         }}
       />
 
@@ -171,7 +171,7 @@ const GrandComplication: React.FC = () => {
             md:[background-size:140%] lg:[background-size:130%] 
             xl:[background-size:110%] 2xl:[background-size:110%]"
           style={{
-            backgroundImage: `url('/src/assets/images/sky-complication/day-night/sky-phase-cover.png')`,
+            backgroundImage: `url('/images/sky-complication/day-night/sky-phase-cover.png')`,
           }}
         />
 
