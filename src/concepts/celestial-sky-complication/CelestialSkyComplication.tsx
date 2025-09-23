@@ -1,19 +1,59 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Col, Button } from 'antd'
+import { Row, Col, Button, Spin } from 'antd'
 import FixedHeaderCelestial from './components/FixedHeaderCelestial'
 import GrandComplication from './components/GrandComplication'
 import { SimulationProvider } from './context/SimulationContext'
 
 const CelestialSkyComplication: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isImageLoading, setIsImageLoading] = useState(true)
+
+  // Check if all background images are loaded
+  useEffect(() => {
+    const checkImageLoad = () => {
+      const images = [
+        '/images/sky-complication/background.jpg',
+        '/images/sky-complication/day-night/sky-disk.png',
+        '/images/sky-complication/day-night/sky-phase-cover.png',
+        '/images/sky-complication/day-night/clouds.png',
+        '/images/sky-complication/day-night/stars.png',
+        '/images/sky-complication/day-night/sun.png',
+        '/images/sky-complication/day-night/moon.png'
+      ]
+      
+      let loadedCount = 0
+      const totalImages = images.length
+      
+      const onImageLoad = () => {
+        loadedCount++
+        if (loadedCount === totalImages) {
+          setIsImageLoading(false)
+          // Trigger animations after images are loaded
+          const timer = setTimeout(() => {
+            setIsLoaded(true)
+          }, 100)
+          return () => clearTimeout(timer)
+        }
+      }
+      
+      images.forEach(src => {
+        const img = new Image()
+        img.onload = onImageLoad
+        img.src = src
+      })
+    }
+    
+    checkImageLoad()
+  }, [])
 
   useEffect(() => {
-    // Trigger animations after component mounts
-    const timer = setTimeout(() => {
+    // Fallback timer in case images fail to load
+    const fallbackTimer = setTimeout(() => {
+      setIsImageLoading(false)
       setIsLoaded(true)
-    }, 100)
+    }, 5000) // 5 second fallback
     
-    return () => clearTimeout(timer)
+    return () => clearTimeout(fallbackTimer)
   }, [])
 
   const scrollToComplication = () => {
@@ -25,6 +65,16 @@ const CelestialSkyComplication: React.FC = () => {
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900">
+      {/* Loading Spinner Overlay */}
+      {isImageLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="text-center">
+            <Spin size="large" />
+            <p className="mt-4 text-white text-lg">Loading Celestial Sky...</p>
+          </div>
+        </div>
+      )}
+      
       {/* Top Bar */}
       <FixedHeaderCelestial />
       
