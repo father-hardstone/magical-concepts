@@ -9,13 +9,11 @@ const TouristDestinationTwo: React.FC = () => {
   const nightImageRef = useRef<HTMLDivElement>(null)
 
   const toggleTheme = () => {
-    console.log('Toggling theme from', isNightMode, 'to', !isNightMode)
     setIsNightMode(!isNightMode)
   }
 
   useEffect(() => {
     if (celestialDiskRef.current && dayImageRef.current && nightImageRef.current) {
-      console.log('All refs found, starting staged animation')
       
       // First: Celestial disk fades in
       gsap.fromTo(celestialDiskRef.current, 
@@ -33,7 +31,6 @@ const TouristDestinationTwo: React.FC = () => {
         { opacity: isNightMode ? 1 : 0, duration: 0.4, ease: "power2.out", delay: 0.3 }
       )
     } else {
-      console.log('Refs not found')
     }
   }, [])
 

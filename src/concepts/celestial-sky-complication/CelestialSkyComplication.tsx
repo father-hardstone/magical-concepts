@@ -1,83 +1,82 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { useLocation } from 'react-router-dom'
-import { gsap } from 'gsap'
+import React from 'react'
+import { Row, Col, Button } from 'antd'
 import FixedHeaderCelestial from './components/FixedHeaderCelestial'
-import CoverPage from './components/CoverPage'
-import BackgroundPage from './components/BackgroundPage'
+import GrandComplication from './components/GrandComplication'
+import { SimulationProvider } from './context/SimulationContext'
 
 const CelestialSkyComplication: React.FC = () => {
-  const location = useLocation()
-  const [isNightMode] = useState(true) // Always dark mode for this page
-  const [scrollY, setScrollY] = useState(0)
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  // Debug: Log when component mounts/unmounts
-  useEffect(() => {
-    console.log('CelestialSkyComplication mounted', location.pathname)
-    return () => {
-      console.log('CelestialSkyComplication unmounted')
-      // Force cleanup of all GSAP animations
-      gsap.killTweensOf("*")
+  const scrollToComplication = () => {
+    const element = document.querySelector('.complication-section')
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [location.pathname])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (containerRef.current) {
-        const scrollTop = containerRef.current.scrollTop
-        setScrollY(scrollTop)
-      }
-    }
-
-    const container = containerRef.current
-    if (container) {
-      container.addEventListener('scroll', handleScroll)
-      return () => container.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
-
-  // Calculate opacity based on scroll
-  const coverPageOpacity = Math.max(0, 1 - scrollY / 400) // CoverPage fades out in first 400px
-  const backgroundPageOpacity = Math.min(1, scrollY / 400) // BackgroundPage fades in during first 400px
+  }
 
   return (
-    <div 
-      key="celestial-sky-complication-main"
-      className={`w-screen h-screen relative overflow-hidden transition-all duration-1000 ${
-        isNightMode 
-          ? 'bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900' 
-          : 'bg-gradient-to-br from-white via-blue-50 to-indigo-100'
-      }`}
-    >
+    <div className="w-full min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900">
+      {/* Top Bar */}
       <FixedHeaderCelestial />
       
-      {/* Scrollable Container */}
-      <div 
-        ref={containerRef}
-        className="w-full h-full overflow-y-auto overflow-x-hidden scrollbar-hide"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        {/* Cover Page Component */}
-        <div 
-          style={{ 
-            opacity: coverPageOpacity,
-            transition: 'opacity 0.3s ease-out'
-          }}
-        >
-          <CoverPage />
-        </div>
-        
-        {/* Background Page Component */}
-        <div 
-          style={{ 
-            opacity: backgroundPageOpacity,
-            transition: 'opacity 0.3s ease-out'
-          }}
-        >
-          <BackgroundPage isNightMode={isNightMode} />
-        </div>
+      {/* Hero Section - Full Viewport */}
+      <div className="w-full h-screen relative">
+        <Row className="h-full">
+          {/* Left Side - Background Image */}
+          <Col xs={24} md={12} className="h-full relative">
+            <div
+              className="w-full h-full bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage: `url('/images/sky-complication/background.jpg')`,
+                filter: 'brightness(0.7) contrast(1.1)'
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
+          </Col>
+
+          {/* Right Side - Content */}
+          <Col xs={24} md={12} className="h-full flex items-center justify-center p-8 md:p-12">
+            <div className="max-w-lg">
+              {/* Main Heading */}
+              <h1
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white"
+                style={{
+                  textShadow: '0 0 20px rgba(0,0,0,0.8)',
+                  lineHeight: '1.1'
+                }}
+              >
+                Celestial Sky Complication
+              </h1>
+
+              {/* Subheading */}
+              <div className="mb-8 space-y-4">
+                <h2 className="text-xl md:text-2xl font-semibold text-gray-200">
+                  Astronomy Meets Horology
+                </h2>
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  The celestial sky complication brings the heavens to the wrist—a rotating chart of stars, sun, and moon. In 1989, Patek Philippe's Calibre 89 introduced astronomical displays in a modern grand complication. This vision was perfected in 2002 with the Ref. 5102 "Celestial", showing the night sky, moon phases, and orbits with unmatched precision.
+                </p>
+                <p className="text-base text-gray-400 leading-relaxed">
+                  Patek Philippe remains the pioneer of this rare invention, uniting astronomy and horology in a timeless masterpiece.
+                </p>
+              </div>
+
+              {/* View Complication Button */}
+              <Button
+                type="primary"
+                size="large"
+                onClick={scrollToComplication}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 border-0 text-white font-semibold px-8 py-4 h-auto text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                View Complication
+              </Button>
+            </div>
+          </Col>
+        </Row>
       </div>
 
+      {/* Grand Complication Section */}
+      <SimulationProvider>
+        <GrandComplication />
+      </SimulationProvider>
     </div>
   )
 }

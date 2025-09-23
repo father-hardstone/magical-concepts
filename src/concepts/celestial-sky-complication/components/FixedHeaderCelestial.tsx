@@ -1,18 +1,15 @@
 import React from 'react'
 
 const FixedHeaderCelestial: React.FC = () => {
-
   return (
-    <nav className="fixed top-0 w-full z-[100] bg-black/30 backdrop-blur-md border-b border-white/20">
+    <nav className="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-md border-b border-white/20">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          {/* Back Button - Top Left */}
-          <button 
-            onClick={() => {
-              console.log('Back button clicked - navigating to home')
-              // Force navigation using window.location
-              window.location.href = '/'
-            }}
+          <div className="text-white font-semibold">
+            Celestial Sky Complication
+          </div>
+          <button
+            onClick={() => window.location.href = '/'}
             className="text-white hover:text-purple-300 transition-colors duration-300 flex items-center space-x-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm border border-white/20"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -20,16 +17,6 @@ const FixedHeaderCelestial: React.FC = () => {
             </svg>
             <span className="font-medium">Back to Gallery</span>
           </button>
-          
-          {/* Center Logo */}
-          <div className="text-2xl font-bold text-white">
-            Ibrahim's Gallery
-          </div>
-          
-          {/* Celestial Sky Complication Title - Top Right */}
-          <div className="text-lg font-semibold text-white/80">
-            Celestial Sky Complication
-          </div>
         </div>
       </div>
     </nav>
