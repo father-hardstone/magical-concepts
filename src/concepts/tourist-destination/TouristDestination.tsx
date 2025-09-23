@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import FixedHeader from './components/FixedHeader'
 import ConceptCardsSection from './components/ConceptCardsSection'
 import FeaturesSection from './components/FeaturesSection'
@@ -6,9 +6,11 @@ import CallToActionSection from './components/CallToActionSection'
 import { useCyclingBackground } from './hooks/useCyclingBackground'
 import { useResponsiveBackground } from './hooks/useResponsiveBackground'
 import { useScrollAnimation } from '../tourist-destination-two/hooks/useScrollAnimation'
+import { Spin } from 'antd'
 
 const TouristDestination: React.FC = () => {
   const [isNightMode, setIsNightMode] = useState(false)
+  const [isImageLoading, setIsImageLoading] = useState(true)
   
   // Scroll animation hooks for each section
   const conceptCardsAnimation = useScrollAnimation({ animationType: 'slideFromLeft' })
@@ -21,6 +23,32 @@ const TouristDestination: React.FC = () => {
   // Responsive background dimensions
   const responsiveBackground = useResponsiveBackground(backgroundCycle.getResponsiveDimensions)
 
+  // Check if background images are loaded
+  useEffect(() => {
+    const checkImageLoad = () => {
+      const dayImage = new Image()
+      const nightImage = new Image()
+      
+      let loadedCount = 0
+      const totalImages = 2
+      
+      const onImageLoad = () => {
+        loadedCount++
+        if (loadedCount === totalImages) {
+          setIsImageLoading(false)
+        }
+      }
+      
+      dayImage.onload = onImageLoad
+      nightImage.onload = onImageLoad
+      
+      dayImage.src = backgroundCycle.currentBackground.dayImage
+      nightImage.src = backgroundCycle.currentBackground.nightImage
+    }
+    
+    checkImageLoad()
+  }, [backgroundCycle.currentBackground])
+
   const toggleTheme = () => {
     setIsNightMode(!isNightMode)
   }
@@ -31,6 +59,15 @@ const TouristDestination: React.FC = () => {
         ? 'bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900' 
         : 'bg-gradient-to-br from-white via-blue-50 to-indigo-100'
     }`}>
+      {/* Loading Spinner Overlay */}
+      {isImageLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="text-center">
+            <Spin size="large" />
+            <p className="mt-4 text-white text-lg">Loading...</p>
+          </div>
+        </div>
+      )}
       <FixedHeader 
         isNightMode={isNightMode} 
         onToggleTheme={toggleTheme} 

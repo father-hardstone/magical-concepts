@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
+import { Spin } from 'antd'
 import FixedHeaderTwo from './components/FixedHeaderTwo'
 import ConceptCardsSection from './components/ConceptCardsSection'
 import FeaturesSection from './components/FeaturesSection'
@@ -8,6 +9,7 @@ import { useScrollAnimation } from './hooks/useScrollAnimation'
 
 const TouristDestinationTwo: React.FC = () => {
   const [isNightMode, setIsNightMode] = useState(false)
+  const [isImageLoading, setIsImageLoading] = useState(true)
   const celestialDiskRef = useRef<HTMLDivElement>(null)
   const dayImageRef = useRef<HTMLDivElement>(null)
   const nightImageRef = useRef<HTMLDivElement>(null)
@@ -16,6 +18,35 @@ const TouristDestinationTwo: React.FC = () => {
   const conceptCardsAnimation = useScrollAnimation({ animationType: 'slideFromLeft' })
   const featuresAnimation = useScrollAnimation({ animationType: 'slideFromRight' })
   const ctaAnimation = useScrollAnimation({ animationType: 'zoomIn' })
+
+  // Check if background images are loaded
+  useEffect(() => {
+    const checkImageLoad = () => {
+      const celestialImage = new Image()
+      const dayImage = new Image()
+      const nightImage = new Image()
+      
+      let loadedCount = 0
+      const totalImages = 3
+      
+      const onImageLoad = () => {
+        loadedCount++
+        if (loadedCount === totalImages) {
+          setIsImageLoading(false)
+        }
+      }
+      
+      celestialImage.onload = onImageLoad
+      dayImage.onload = onImageLoad
+      nightImage.onload = onImageLoad
+      
+      celestialImage.src = '/images/buckingham2/celestial-disk.png'
+      dayImage.src = '/images/buckingham2/day.png'
+      nightImage.src = '/images/buckingham2/night.png'
+    }
+    
+    checkImageLoad()
+  }, [])
 
   const toggleTheme = () => {
     setIsNightMode(!isNightMode)
@@ -62,6 +93,15 @@ const TouristDestinationTwo: React.FC = () => {
         ? 'bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900'
         : 'bg-gradient-to-br from-white via-blue-50 to-indigo-100'
       }`}>
+      {/* Loading Spinner Overlay */}
+      {isImageLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="text-center">
+            <Spin size="large" />
+            <p className="mt-4 text-white text-lg">Loading...</p>
+          </div>
+        </div>
+      )}
       <FixedHeaderTwo isNightMode={isNightMode} onToggleTheme={toggleTheme} />
 
       {/* Background Elements */}
