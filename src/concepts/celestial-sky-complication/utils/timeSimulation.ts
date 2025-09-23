@@ -75,8 +75,7 @@ export const calculateRotationFromTime = (time: Date): number => {
 
 // Update simulation time based on speed multiplier
 export const updateSimulationTime = (
-  config: TimeSimulationConfig,
-  deltaTime: number
+  config: TimeSimulationConfig
 ): Date => {
   if (config.isPaused) {
     return config.simulationTime

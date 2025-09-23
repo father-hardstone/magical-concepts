@@ -16,7 +16,6 @@ type Timeout = ReturnType<typeof setTimeout>
 const GrandComplication: React.FC = () => {
   const skyDiskRef = useRef<HTMLDivElement>(null)
   const animationRef = useRef<gsap.core.Tween | null>(null)
-  const lastUpdateTime = useRef<number>(Date.now())
   const skyDiskRotationValue = useRef<number>(0) // Track sky disk rotation separately
   const totalRotations = useRef<number>(0) // Track total number of full rotations
   const { isPaused, speed, currentTime, simulationTime, skyDiskRotation, resetTrigger } = useSimulation()
