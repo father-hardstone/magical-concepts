@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import FixedHeader from './components/FixedHeader'
 import ConceptCardsSection from './components/ConceptCardsSection'
 import FeaturesSection from './components/FeaturesSection'
@@ -9,6 +10,7 @@ import { useScrollAnimation } from '../tourist-destination-two/hooks/useScrollAn
 import { Spin } from 'antd'
 
 const TouristDestination: React.FC = () => {
+  const navigate = useNavigate()
   const [isNightMode, setIsNightMode] = useState(false)
   const [isImageLoading, setIsImageLoading] = useState(true)
   
@@ -71,7 +73,6 @@ const TouristDestination: React.FC = () => {
       <FixedHeader 
         isNightMode={isNightMode} 
         onToggleTheme={toggleTheme} 
-        onNextBackground={backgroundCycle.cycleToNext}
       />
       
       {/* Background Elements */}
@@ -119,38 +120,118 @@ const TouristDestination: React.FC = () => {
 
       {/* Hero Section - Full Height Landing with Background Image */}
       <section className="relative z-10 flex items-end justify-start min-h-screen pb-16 px-8 sm:px-12 lg:px-16">
-        {/* Day Background */}
-        <div 
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            isNightMode ? 'opacity-0' : 'opacity-100'
-          }`}
-          style={{
-            backgroundImage: `url(${backgroundCycle.currentBackground.dayImage})`,
-            backgroundSize: responsiveBackground.dimensions.backgroundSize,
-            backgroundPosition: responsiveBackground.dimensions.backgroundPosition,
-            backgroundRepeat: 'no-repeat'
-          }}
-        />
-        
-        {/* Night Background */}
-        <div 
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            isNightMode ? 'opacity-100' : 'opacity-0'
-          }`}
-          style={{
-            backgroundImage: `url(${backgroundCycle.currentBackground.nightImage})`,
-            backgroundSize: responsiveBackground.dimensions.backgroundSize,
-            backgroundPosition: responsiveBackground.dimensions.backgroundPosition,
-            backgroundRepeat: 'no-repeat'
-          }}
-        />
+        {/* Day/Night Background Wrapper with smooth crossfade when cycling */}
+        <div className={`absolute inset-0 z-0 transition-opacity duration-700 ${
+          backgroundCycle.isTransitioning ? 'opacity-60' : 'opacity-100'
+        }`}>
+          {/* Day Background */}
+          <div 
+            className={`absolute inset-0 transition-opacity duration-700 ${
+              isNightMode ? 'opacity-0' : 'opacity-100'
+            }`}
+            style={{
+              backgroundImage: `url(${backgroundCycle.currentBackground.dayImage})`,
+              backgroundSize: responsiveBackground.dimensions.backgroundSize,
+              backgroundPosition: responsiveBackground.dimensions.backgroundPosition,
+              backgroundRepeat: 'no-repeat'
+            }}
+          />
+          
+          {/* Night Background */}
+          <div 
+            className={`absolute inset-0 transition-opacity duration-700 ${
+              isNightMode ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{
+              backgroundImage: `url(${backgroundCycle.currentBackground.nightImage})`,
+              backgroundSize: responsiveBackground.dimensions.backgroundSize,
+              backgroundPosition: responsiveBackground.dimensions.backgroundPosition,
+              backgroundRepeat: 'no-repeat'
+            }}
+          />
+        </div>
+
+        {/* Manual Carousel Controls - Previous / Next */}
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-between px-4 sm:px-8 lg:px-12">
+          <button
+            type="button"
+            aria-label="Previous destination"
+            onClick={() => {
+              if (!backgroundCycle.isTransitioning) {
+                backgroundCycle.cycleToPrevious()
+              }
+            }}
+            className="pointer-events-auto inline-flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black/35 text-white shadow-lg ring-1 ring-white/30 backdrop-blur-md transition hover:bg-black/55"
+          >
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            aria-label="Next destination"
+            onClick={() => {
+              if (!backgroundCycle.isTransitioning) {
+                backgroundCycle.cycleToNext()
+              }
+            }}
+            className="pointer-events-auto inline-flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black/35 text-white shadow-lg ring-1 ring-white/30 backdrop-blur-md transition hover:bg-black/55"
+          >
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 6l6 6-6 6" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Carousel Dots */}
+        <div className="pointer-events-none absolute bottom-10 left-1/2 z-20 -translate-x-1/2">
+          <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-black/40 px-3 py-2 backdrop-blur-md">
+            {backgroundCycle.allBackgrounds.map((bg, index) => {
+              const isActive = index === backgroundCycle.currentIndex
+              return (
+                <button
+                  key={bg.id}
+                  type="button"
+                  aria-label={bg.name}
+                  onClick={() => {
+                    if (!backgroundCycle.isTransitioning) {
+                      backgroundCycle.cycleToSpecific(index)
+                    }
+                  }}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                    isActive
+                      ? 'w-6 bg-white'
+                      : 'w-2.5 bg-white/40 hover:bg-white/70'
+                  }`}
+                />
+              )
+            })}
+          </div>
+        </div>
         
         {/* Overlay for better text readability */}
-        <div className={`absolute inset-0 transition-all duration-1000 ${
+        <div className={`pointer-events-none absolute inset-0 z-10 transition-all duration-1000 ${
           isNightMode ? 'bg-black/20' : 'bg-white/10'
         }`}></div>
 
-        <div className="relative z-10 max-w-3xl">
+        <div className="relative z-20 max-w-3xl">
           {/* Main Heading */}
           <h1 className={`text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight pl-4 text-left transition-colors duration-1000 ${
             isNightMode ? 'text-white' : 'text-blue-900'
@@ -174,15 +255,23 @@ const TouristDestination: React.FC = () => {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 pl-4">
-            <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full text-base font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25">
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full text-base font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+            >
               Explore Concepts
             </button>
-            <button className={`border-2 px-6 py-3 rounded-full text-base font-semibold transition-all duration-300 transform hover:scale-105 ${
-              isNightMode 
-                ? 'border-white text-white hover:bg-white hover:text-purple-900'
-                : 'border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'
-            }`}>
-              View Portfolio
+            <button
+              type="button"
+              onClick={() => window.open('https://ahmedfolio-eugdgk8p.manus.space', '_blank', 'noopener,noreferrer')}
+              className={`border-2 px-6 py-3 rounded-full text-base font-semibold transition-all duration-300 transform hover:scale-105 ${
+                isNightMode 
+                  ? 'border-white text-white hover:bg-white hover:text-purple-900'
+                  : 'border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'
+              }`}
+            >
+              Contact us.
             </button>
           </div>
         </div>
@@ -190,11 +279,11 @@ const TouristDestination: React.FC = () => {
 
       {/* Content Section - Below the fold */}
       <main className="relative z-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto py-16 sm:py-20 lg:py-24 space-y-16 sm:space-y-20 lg:space-y-28">
           {/* Concept Cards Section */}
           <section 
             ref={conceptCardsAnimation.elementRef}
-            className={conceptCardsAnimation.getAnimationClasses()}
+            className={`${conceptCardsAnimation.getAnimationClasses()} scroll-mt-28`}
           >
             <ConceptCardsSection isNightMode={isNightMode} />
           </section>
@@ -202,7 +291,7 @@ const TouristDestination: React.FC = () => {
           {/* Features Section */}
           <section 
             ref={featuresAnimation.elementRef}
-            className={featuresAnimation.getAnimationClasses()}
+            className={`${featuresAnimation.getAnimationClasses()} scroll-mt-28`}
           >
             <FeaturesSection isNightMode={isNightMode} />
           </section>
@@ -210,7 +299,7 @@ const TouristDestination: React.FC = () => {
           {/* Call to Action Section */}
           <section 
             ref={ctaAnimation.elementRef}
-            className={ctaAnimation.getAnimationClasses()}
+            className={`${ctaAnimation.getAnimationClasses()} scroll-mt-28`}
           >
             <CallToActionSection isNightMode={isNightMode} />
           </section>
