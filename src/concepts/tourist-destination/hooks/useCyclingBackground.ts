@@ -27,8 +27,8 @@ const BACKGROUND_SETS: BackgroundSet[] = [
   {
     id: 'buckingham1',
     name: 'Buckingham Palace 1',
-    dayImage: '/images/carousel/1-buckingham1/day.jpg',
-    nightImage: '/images/carousel/1-buckingham1/night.jpg',
+    dayImage: '/images/carousel/1-buckingham1/day.webp',
+    nightImage: '/images/carousel/1-buckingham1/night.webp',
     dimensions: {
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -45,8 +45,8 @@ const BACKGROUND_SETS: BackgroundSet[] = [
   {
     id: 'noormahal1',
     name: 'Noor Mahal 1',
-    dayImage: '/images/carousel/2-noormahal1/day.jpg',
-    nightImage: '/images/carousel/2-noormahal1/night.jpg',
+    dayImage: '/images/carousel/2-noormahal1/day.webp',
+    nightImage: '/images/carousel/2-noormahal1/night.webp',
     dimensions: {
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -63,8 +63,8 @@ const BACKGROUND_SETS: BackgroundSet[] = [
   {
     id: 'buckingham2',
     name: 'Buckingham Palace 2',
-    dayImage: '/images/carousel/3-buckingham2/day.jpg',
-    nightImage: '/images/carousel/3-buckingham2/night.jpg',
+    dayImage: '/images/carousel/3-buckingham2/day.webp',
+    nightImage: '/images/carousel/3-buckingham2/night.webp',
     dimensions: {
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -81,8 +81,8 @@ const BACKGROUND_SETS: BackgroundSet[] = [
   {
     id: 'noormahal2',
     name: 'Noor Mahal 2',
-    dayImage: '/images/carousel/4-noormahal2/day.jpg',
-    nightImage: '/images/carousel/4-noormahal2/night.jpg',
+    dayImage: '/images/carousel/4-noormahal2/day.webp',
+    nightImage: '/images/carousel/4-noormahal2/night.webp',
     dimensions: {
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -99,8 +99,8 @@ const BACKGROUND_SETS: BackgroundSet[] = [
   {
     id: 'tajmahal',
     name: 'Taj Mahal',
-    dayImage: '/images/carousel/5-tajmahal/day.jpg',
-    nightImage: '/images/carousel/5-tajmahal/night.jpg',
+    dayImage: '/images/carousel/5-tajmahal/day.webp',
+    nightImage: '/images/carousel/5-tajmahal/night.webp',
     dimensions: {
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -110,6 +110,96 @@ const BACKGROUND_SETS: BackgroundSet[] = [
       },
       md: {
         backgroundSize: '165%',
+        backgroundPosition: 'center'
+      }
+    }
+  },
+  {
+    id: 'burjkhalifa',
+    name: 'Burj Khalifa',
+    dayImage: '/images/carousel/6-burjkhalifa/day.webp',
+    nightImage: '/images/carousel/6-burjkhalifa/night.webp',
+    dimensions: {
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      sm: {
+        backgroundSize: '280%',
+        backgroundPosition: 'center bottom'
+      },
+      md: {
+        backgroundSize: '170%',
+        backgroundPosition: 'center'
+      }
+    }
+  },
+  {
+    id: 'japan',
+    name: 'Japan Skyline',
+    dayImage: '/images/carousel/7-japan/day.webp',
+    nightImage: '/images/carousel/7-japan/night.webp',
+    dimensions: {
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      sm: {
+        backgroundSize: '280%',
+        backgroundPosition: 'center bottom'
+      },
+      md: {
+        backgroundSize: '170%',
+        backgroundPosition: 'center'
+      }
+    }
+  },
+  {
+    id: 'greatwall',
+    name: 'Great Wall',
+    dayImage: '/images/carousel/8-greatwall/day.webp',
+    nightImage: '/images/carousel/8-greatwall/night.webp',
+    dimensions: {
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      sm: {
+        backgroundSize: '280%',
+        backgroundPosition: 'center bottom'
+      },
+      md: {
+        backgroundSize: '170%',
+        backgroundPosition: 'center'
+      }
+    }
+  },
+  {
+    id: 'liberty',
+    name: 'Statue of Liberty',
+    dayImage: '/images/carousel/9-liberty/day.webp',
+    nightImage: '/images/carousel/9-liberty/night.webp',
+    dimensions: {
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      sm: {
+        backgroundSize: '280%',
+        backgroundPosition: 'center bottom'
+      },
+      md: {
+        backgroundSize: '170%',
+        backgroundPosition: 'center'
+      }
+    }
+  },
+  {
+    id: 'eiffel',
+    name: 'Eiffel Tower',
+    dayImage: '/images/carousel/10-eiffel/day.webp',
+    nightImage: '/images/carousel/10-eiffel/night.webp',
+    dimensions: {
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      sm: {
+        backgroundSize: '280%',
+        backgroundPosition: 'center bottom'
+      },
+      md: {
+        backgroundSize: '170%',
         backgroundPosition: 'center'
       }
     }

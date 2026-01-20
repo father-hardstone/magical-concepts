@@ -246,11 +246,11 @@ const TouristDestinationTwo: React.FC = () => {
 
       {/* Content Section - Below the fold */}
       <main className="relative z-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto py-16 sm:py-20 lg:py-24 space-y-16 sm:space-y-20 lg:space-y-28">
           {/* Concept Cards Section */}
           <section 
             ref={conceptCardsAnimation.elementRef}
-            className={conceptCardsAnimation.getAnimationClasses()}
+            className={`${conceptCardsAnimation.getAnimationClasses()} scroll-mt-28`}
           >
             <ConceptCardsSection isNightMode={isNightMode} />
           </section>
@@ -258,7 +258,7 @@ const TouristDestinationTwo: React.FC = () => {
           {/* Features Section */}
           <section 
             ref={featuresAnimation.elementRef}
-            className={featuresAnimation.getAnimationClasses()}
+            className={`${featuresAnimation.getAnimationClasses()} scroll-mt-28`}
           >
             <FeaturesSection isNightMode={isNightMode} />
           </section>
@@ -266,7 +266,7 @@ const TouristDestinationTwo: React.FC = () => {
           {/* Call to Action Section */}
           <section 
             ref={ctaAnimation.elementRef}
-            className={ctaAnimation.getAnimationClasses()}
+            className={`${ctaAnimation.getAnimationClasses()} scroll-mt-28`}
           >
             <CallToActionSection isNightMode={isNightMode} />
           </section>
